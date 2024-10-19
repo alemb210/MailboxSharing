@@ -1,14 +1,15 @@
 # MailboxSharing
-GrantMailboxAccess.ps1 and UpdateMailboxAccess.ps1 are two scripts meant to be used in conjunction to simplify and automate the process of sharing mailboxes between users in Exchange Online for administrators. By automatically removing lingering access rights, potential for human error among support technicians is removed, creating a more secure and decluttered domain environment.
+MailboxSharing is a PowerShell-focused project intended to simplify and automate the process of sharing mailboxes between users in Exchange Online for administrators. By automatically removing lingering access rights, potential for human error among support technicians is removed, creating a more secure and decluttered domain environment.
 
-# GrantMailboxAccess.ps1
-GrantMailboxAccess.ps1 is a script that should be run manually by an administrator upon receiving a support request to share a user's mailbox. It will prompt for three parameters -- the first, being the email address of the user who's inbox is being accessed. The second prompt is the email address of the user requesting access. The third is the number of days in which this user should have access, as an integer.
+# RESTMailbox
+The folder RESTMailbox contains the code for the website that is configured to run as an Azure Static Web App. Utilizing HTTP Forms and Fetch, the site can take in parameters from an administrator and send a POST request containing necessary data to a Function App configured to respond to HTTP requests.
 
-It will then verify the proper modules are installed, and install them if necessary. 
+# HTTPMailbox.ps1
+HTTPMailbox.ps1 is a PowerShell script integrated as an Azure Function App, triggered by HTTP requests. 
 
-It will prompt the user to connect to Exchange Online, after which the mailbox access will be granted, and then Microsoft's Azure, in order to access the database.
+It parses JSON data from the body of POST requests sent by the static web app (RESTMailbox folder), specifically a user who is requesting access, the user whose inbox they are requesting access to, and the number of days they should be granted access.
 
-After, the new access rights will be uploaded to the database in Azure Storage and the script will complete.
+It will then authenticate to Exchange Online using a certificate in Azure Key Vault and assign the necessary permissions.
 
 # UpdateMailboxAccess.ps1
 UpdateMailboxAccess.ps1 is a PowerShell script which is used as an Azure Function App linked to a timer trigger. Depending on the trigger, the script will be run at set intervals and review the access rights in the database, revoking access and updating the 'Expired' column for all rights which have passed their expiration date.
